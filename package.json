@@ -1,5 +1,5 @@
 {
-  "name": "stream-chain",
+  "name": "@thasmorato/stream-chain",
   "version": "1.0.0",
   "description": "Chain functions as transform streams.",
   "type": "commonjs",
