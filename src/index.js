@@ -2,7 +2,7 @@
 
 'use strict';
 
-const {Readable, Writable, Duplex} = require('node:stream');
+const { Readable, Writable, Duplex } = require('node:stream');
 const defs = require('./defs');
 const gen = require('./gen');
 const asStream = require('./asStream');
@@ -53,15 +53,15 @@ const groupFunctions = (output, fn, index, fns) => {
     return output;
   }
   if (isDuplexWebStream(fn)) {
-    output.push(Duplex.fromWeb(fn, {objectMode: true}));
+    output.push(Duplex.fromWeb(fn, { objectMode: true }));
     return output;
   }
   if (!index && isReadableWebStream(fn)) {
-    output.push(Readable.fromWeb(fn, {objectMode: true}));
+    output.push(Readable.fromWeb(fn, { objectMode: true }));
     return output;
   }
   if (index === fns.length - 1 && isWritableWebStream(fn)) {
-    output.push(Writable.fromWeb(fn, {objectMode: true}));
+    output.push(Writable.fromWeb(fn, { objectMode: true }));
     return output;
   }
   if (typeof fn != 'function')
@@ -94,13 +94,13 @@ const wrapFunctions = (fn, index, fns) => {
     return fn; // an acceptable stream
   }
   if (isDuplexWebStream(fn)) {
-    return Duplex.fromWeb(fn, {objectMode: true});
+    return Duplex.fromWeb(fn, { objectMode: true });
   }
   if (!index && isReadableWebStream(fn)) {
-    return Readable.fromWeb(fn, {objectMode: true});
+    return Readable.fromWeb(fn, { objectMode: true });
   }
   if (index === fns.length - 1 && isWritableWebStream(fn)) {
-    return Writable.fromWeb(fn, {objectMode: true});
+    return Writable.fromWeb(fn, { objectMode: true });
   }
   if (typeof fn == 'function') return chain.asStream(fn); // a function
   throw TypeError('Item #' + index + ' is not a proper stream, nor a function.');
@@ -140,14 +140,14 @@ const chain = (fns, options) => {
   fns = fns.flat(Infinity).filter(fn => fn);
 
   const streams = (
-      options && options.noGrouping
-        ? fns.map(wrapFunctions)
-        : fns
-            .map(fn => (defs.isFunctionList(fn) ? defs.getFunctionList(fn) : fn))
-            .flat(Infinity)
-            .reduce(groupFunctions, [])
-            .map(produceStreams)
-    ).filter(s => s),
+    options && options.noGrouping
+      ? fns.map(wrapFunctions)
+      : fns
+        .map(fn => (defs.isFunctionList(fn) ? defs.getFunctionList(fn) : fn))
+        .flat(Infinity)
+        .reduce(groupFunctions, [])
+        .map(produceStreams)
+  ).filter(s => s),
     input = streams[0],
     output = streams.reduce((output, item) => (output && output.pipe(item)) || item);
 
@@ -167,12 +167,12 @@ const chain = (fns, options) => {
     output.on('data', chunk => !stream.push(chunk) && output.pause());
     output.on('end', () => stream.push(null));
   } else {
-    readMethod = () => {}; // nop
+    readMethod = () => { }; // nop
     output.on('finish', () => stream.push(null));
   }
 
   stream = new Duplex(
-    Object.assign({writableObjectMode: true, readableObjectMode: true}, options, {
+    Object.assign({ writableObjectMode: true, readableObjectMode: true }, options, {
       readable: isReadableNodeStream(output),
       writable: isWritableNodeStream(input),
       write: writeMethod,
@@ -245,3 +245,9 @@ module.exports.gen = gen;
 module.exports.asStream = asStream;
 
 module.exports.dataSource = dataSource;
+
+const jsonl = require('./jsonl');
+const utils = require('./utils');
+
+module.exports.jsonl = jsonl;
+module.exports.utils = utils;
