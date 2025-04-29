@@ -21,6 +21,7 @@ jobs:
 
       - name: Run login
         run: npm login
+
       - name: Run publish package
         run: npm publish
 
